@@ -1,5 +1,7 @@
 const todos = [];
 const RENDER_EVENT = "render-todo";
+const SAVED_EVENT = "saved-todo";
+const STORAGE_KEY = "TODO_APPS";
 
 document.addEventListener("DOMContentLoaded", () => {
   const submitForm = document.getElementById("form");
@@ -7,6 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     addTodo();
   });
+
+  if (isStorageExist()) {
+    loadDataFromStorage();
+  }
 });
 
 const addTodo = () => {
@@ -23,6 +29,7 @@ const addTodo = () => {
   todos.push(todoObject);
 
   document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
 };
 
 const makeTodo = (todoObject) => {
@@ -93,6 +100,7 @@ const addTaskToComplete = (todoId) => {
 
   todoTarget.isCompleted = true;
   document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
 };
 
 const undoTaskFromCompleted = (todoId) => {
@@ -101,6 +109,7 @@ const undoTaskFromCompleted = (todoId) => {
 
   todoTarget.isCompleted = false;
   document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
 };
 
 const removeTaskFromCompleted = (todoId) => {
@@ -108,6 +117,38 @@ const removeTaskFromCompleted = (todoId) => {
   if (todoTarget == null) return;
 
   todos.splice(todoTarget, 1);
+  document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
+};
+
+const isStorageExist = () => {
+  if (typeof Storage === undefined) {
+    alert("Web Storage Not Supported!");
+    return false;
+  }
+
+  return true;
+};
+
+const saveData = () => {
+  if (isStorageExist()) {
+    const parsed = JSON.stringify(todos);
+    localStorage.setItem(STORAGE_KEY, parsed);
+    document.dispatchEvent(new Event(SAVED_EVENT));
+  }
+};
+
+const loadDataFromStorage = () => {
+  const serializedData = localStorage.getItem(STORAGE_KEY);
+
+  let data = JSON.parse(serializedData);
+
+  if (data !== null) {
+    for (todo of data) {
+      todos.push(todo);
+    }
+  }
+
   document.dispatchEvent(new Event(RENDER_EVENT));
 };
 
@@ -137,4 +178,8 @@ document.addEventListener(RENDER_EVENT, function () {
     if (todoItem.isCompleted == false) uncompletedTODOList.append(todoElement);
     else completedTODOList.append(todoElement);
   }
+});
+
+document.addEventListener(SAVED_EVENT, () => {
+  console.log(localStorage.getItem(STORAGE_KEY));
 });
