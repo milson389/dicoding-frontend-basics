@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Storage World</title>
+    <style>
+      .contents {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 1px solid black;
+        border-width: 2px;
+        padding: 15px;
+      }
+
+      #generateButton {
+        margin-top: 5px;
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="contents" align="center">
+      <h1 id="page-title"></h1>
+      <button id="incrementButton">Tambah nilai</button>
+      <button id="clear">Hapus storage</button>
+      <h3>Kamu sudah menekan tombol di atas sebanyak:</h3>
+      <h2 id="count">0</h2>
+    </div>
+
+    <script>
+      const pageTitle = document.getElementById("page-title");
+      const localStorageKey = "PRESS_FREQUENCY_LS";
+      const sessionStorageKey = "PRESS_FREQUENCY_SS";
+
+      const implementLocalStorage = () => {
+        pageTitle.innerText = "Local Storage";
+        if (typeof Storage !== undefined) {
+          if (localStorage.getItem(localStorageKey) === null) {
+            localStorage.setItem(localStorageKey, 0);
+          }
+
+          const IncrementButton = document.querySelector("#incrementButton");
+          const clearButton = document.querySelector("#clear");
+          const countDisplay = document.querySelector("#count");
+
+          countDisplay.innerText = localStorage.getItem(localStorageKey);
+          IncrementButton.addEventListener("click", () => {
+            let count = localStorage.getItem(localStorageKey);
+            count++;
+            localStorage.setItem(localStorageKey, count);
+            countDisplay.innerText = localStorage.getItem(localStorageKey);
+          });
+
+          clearButton.addEventListener("click", () => {
+            localStorage.removeItem(localStorageKey);
+            countDisplay.innerText = 0;
+          });
+        } else {
+          alert("Browser yang Anda gunakan tidak mendukung Web Storage");
+        }
+      };
+
+      const implementSessionStorage = () => {
+        pageTitle.innerText = "Session Storage";
+        if (typeof Storage !== undefined) {
+          if (sessionStorage.getItem(sessionStorageKey) === null) {
+            sessionStorage.setItem(sessionStorageKey, 0);
+          }
+
+          const IncrementButton = document.querySelector("#incrementButton");
+          const clearButton = document.querySelector("#clear");
+          const countDisplay = document.querySelector("#count");
+
+          countDisplay.innerText = sessionStorage.getItem(sessionStorageKey);
+          IncrementButton.addEventListener("click", () => {
+            let count = sessionStorage.getItem(sessionStorageKey);
+            count++;
+            sessionStorage.setItem(sessionStorageKey, count);
+            countDisplay.innerText = sessionStorage.getItem(sessionStorageKey);
+          });
+
+          clearButton.addEventListener("click", () => {
+            sessionStorage.removeItem(sessionStorageKey);
+            countDisplay.innerText = 0;
+          });
+        } else {
+          alert("Browser yang Anda gunakan tidak mendukung Web Storage");
+        }
+      };
+
+      // implementSessionStorage();
+      implementLocalStorage();
+    </script>
+  </body>
+</html>

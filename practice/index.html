@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .contents {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 1px solid black;
+        border-width: 2px;
+        padding: 15px;
+      }
+
+      #generateButton {
+        margin-top: 5px;
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="contents" align="center" hidden>
+      <button id="incrementButton">Tekan Aku :)</button>
+      <h3 id="caption">
+        Kamu sudah menekan tombol di atas sebanyak <span id="count">0</span>
+      </h3>
+      <button class="button" id="tombol">Tombol Custom Event</button>
+    </div>
+
+    <script>
+      const contents = document.querySelector(".contents");
+      const welcome = () => {
+        alert("Remove Hidden Attribute");
+        contents.removeAttribute("hidden");
+      };
+
+      const increment = () => {
+        const counter = document.getElementById("count");
+        counter.innerText++;
+        if (counter.innerText == 7) {
+          const hiddenMessage = document.createElement("h4");
+          hiddenMessage.innerText = "Surprise!";
+          const image = document.createElement("img");
+          image.setAttribute("src", "https://i.ibb.co/0V49VRZ/catto.jpg");
+          contents.appendChild(hiddenMessage).appendChild(image);
+        }
+      };
+
+      const changeCaption = new Event("changeCaption");
+
+      const customEventHandler = (ev) => {
+        console.log("Event " + ev.type + " telah dijalankan");
+        const caption = document.getElementById("caption");
+        caption.innerText = "Anda telah membangkitkan custom event";
+      };
+
+      const tombol = document.getElementById("tombol");
+      tombol.addEventListener("changeCaption", customEventHandler);
+      tombol.addEventListener("click", function () {
+        tombol.dispatchEvent(changeCaption);
+      });
+
+      window.addEventListener("load", welcome);
+      document
+        .getElementById("incrementButton")
+        .addEventListener("click", increment);
+    </script>
+  </body>
+</html>
